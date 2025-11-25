@@ -1,13 +1,13 @@
 from __future__ import print_function
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Conv2D, BatchNormalization, Activation
-from tensorflow.keras.layers import AveragePooling2D, Input, Flatten
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import ModelCheckpoint, LearningRateScheduler
-from tensorflow.keras.callbacks import ReduceLROnPlateau
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.regularizers import l2
-from tensorflow.keras.models import Model
+from keras.layers import Dense, Conv2D, BatchNormalization, Activation, \
+    AveragePooling2D, Input, Flatten
+from keras.optimizers import Adam
+from keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
+from keras.preprocessing.image import ImageDataGenerator
+from keras.regularizers import l2
+from keras.models import Model
+
 import numpy as np
 import os
 
