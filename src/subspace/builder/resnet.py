@@ -7,7 +7,7 @@ from keras.layers import (Flatten, Input, Activation,
                           Reshape, Dropout, Convolution2D,
                           MaxPooling2D, BatchNormalization,
                           Conv2D, GlobalAveragePooling2D,
-                          Concatenate, AveragePooling2D, Dense)
+                          Concatenate, AveragePooling2D, Dense, Add)
 
 # from general.tfutil import hist_summaries_traintest, scalar_summaries_traintest
 
@@ -141,7 +141,7 @@ def build_LeNet_resnet(depth, weight_decay=0, vsize=100, shift_in=None, proj_typ
                                      activation=None,
                                      batch_normalization=False,
                                      name=f"Conv2D_stack{stack}_res{res_block}_l2")
-                x = tf.keras.layers.add([x, y])
+                x = Add()([x, y])
                 x = Activation('relu')(x)
             num_filters *= 2
 
@@ -265,7 +265,7 @@ def build_resnet_fastfood(depth, weight_decay=0, vsize=100, shift_in=None, proj_
                                      activation=None,
                                      batch_normalization=False,
                                      name=f"Conv2D_stack{stack}_res{res_block}_l2")
-                x = tf.keras.layers.add([x, y])
+                x = Add()([x, y])
                 x = Activation('relu')(x)
             num_filters *= 2
 

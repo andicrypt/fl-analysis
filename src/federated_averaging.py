@@ -12,6 +12,7 @@ from typing import List, Any
 import numpy as np
 import tensorflow as tf
 from keras.metrics import Mean
+from keras.losses import SparseCategoricalCrossentropy
 
 # from src.torch_compat.data_holder import DataHolder
 
@@ -513,7 +514,7 @@ class FederatedAveraging:
     @tf.function
     def optimized_evaluate(self, batch_x, batch_y):
         prediction_tensor = self.model(batch_x, training=False)
-        loss = tf.keras.losses.SparseCategoricalCrossentropy(
+        loss = SparseCategoricalCrossentropy(
             from_logits=False)(y_true=batch_y, y_pred=prediction_tensor)
         # tf.print(loss)
         prediction = prediction_tensor

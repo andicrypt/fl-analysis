@@ -4,6 +4,7 @@ import logging
 import numpy as np
 
 import tensorflow as tf
+from keras.optimizers import SGD
 from copy import copy
 logger = logging.getLogger(__name__)
 
@@ -97,7 +98,7 @@ class AnticipateTfAttack(LossBasedAttack):
 
     def honest_training(self, tape, dataset, model):
 
-        honest_optimizer = tf.keras.optimizers.SGD(learning_rate=0.01)
+        honest_optimizer = SGD(learning_rate=0.01)
 
         loss_object_with_reg = self._combine_losses(
             self.stealth_method.loss_term(model) if self.stealth_method is not None else None,

@@ -5,6 +5,7 @@ import numpy as np
 import tensorflow as tf
 
 from src.data import image_augmentation
+from keras.datasets import mnist, fashion_mnist, cifar10
 from src.data import emnist
 
 AUTOTUNE = tf.data.AUTOTUNE
@@ -171,7 +172,7 @@ class Dataset:
     # ==================================================================
     @staticmethod
     def get_mnist_dataset(number_of_samples):
-        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+        (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
         x_train, x_test = x_train/255.0, x_test/255.0
         x_train = x_train[..., np.newaxis].astype(np.float32)
@@ -182,7 +183,7 @@ class Dataset:
 
     @staticmethod
     def get_fmnist_dataset(number_of_samples):
-        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.fashion_mnist.load_data()
+        (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
         x_train, x_test = x_train/255.0, x_test/255.0
         x_train = x_train[..., np.newaxis].astype(np.float32)
@@ -193,7 +194,7 @@ class Dataset:
 
     @staticmethod
     def get_cifar10_dataset(number_of_samples):
-        (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
+        (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
         x_train = x_train.astype(np.float32) / 255.0
         x_test = x_test.astype(np.float32) / 255.0

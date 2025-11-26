@@ -1,13 +1,13 @@
 import tensorflow as tf
 import numpy as np
-
+from keras.losses import SparseCategoricalCrossentropy
 
 # Define custom loss
 def regularized_loss(local_weights, global_weights, alpha):
 
     # Create a loss function that adds the MSE loss to the mean of all squared activations of a specific layer
     def loss(y_true, y_pred):
-        cross_entropy_loss = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)(y_true, y_pred)
+        cross_entropy_loss = SparseCategoricalCrossentropy(from_logits=False)(y_true, y_pred)
         weight_norm = 0
         layer_i = 0
         for local_weight_layer in local_weights:

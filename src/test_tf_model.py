@@ -2,7 +2,8 @@ from unittest import TestCase
 from src.tf_model import Model
 from src.tf_data import Dataset
 from matplotlib import pyplot
-
+from keras.losses import SparseCategoricalCrossentropy
+from keras.optimizers import SGD
 
 import tensorflow as tf
 import numpy as np
@@ -13,8 +14,8 @@ class TestModel(TestCase):
         model = Model.create_model("dev")
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(128)
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.1)
 
         initial_weights = model.get_weights()
 
@@ -45,8 +46,8 @@ class TestModel(TestCase):
         batch_size = 128
 
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.1)
 
         initial_weights = model.get_weights()
 

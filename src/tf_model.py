@@ -44,7 +44,7 @@ class Model:
         elif model_name == 'dev':
             regularizer = l2(regularization_rate) if regularization_rate is not None else None
 
-            model = tf.keras.Sequential([
+            model = Sequential([
                 Conv2D(8, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1), kernel_regularizer=regularizer, bias_regularizer=regularizer),
                 Conv2D(4, (3, 3), activation='relu', kernel_regularizer=regularizer, bias_regularizer=regularizer),
                 MaxPooling2D(pool_size=(2, 2)),
@@ -53,7 +53,7 @@ class Model:
                 Dense(10, activation='softmax'),
             ])
         elif model_name == 'bhagoji':
-            model = tf.keras.Sequential([
+            model = Sequential([
                 Conv2D(64, kernel_size=(5, 5), padding='valid', activation='relu', input_shape=(28, 28, 1)),
                 Conv2D(64, (5, 5), activation='relu'),
                 # tf.keras.layers.Dropout(0.25),

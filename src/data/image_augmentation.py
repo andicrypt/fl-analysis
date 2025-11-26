@@ -1,18 +1,20 @@
 import tensorflow as tf
 import numpy as np
 
+from keras.layers import RandomFlip, RandomTranslation
+
 
 # =======================================
 # Modern, GPU-accelerated augmenters
 # =======================================
 
-AUG_SHIFT = tf.keras.layers.RandomTranslation(
+AUG_SHIFT = RandomTranslation(
     height_factor=0.1,
     width_factor=0.1,
     fill_mode="nearest"
 )
 
-AUG_FLIP = tf.keras.layers.RandomFlip("horizontal")
+AUG_FLIP = RandomFlip("horizontal")
 
 
 # =======================================

@@ -19,6 +19,9 @@ from src.tf_model import Model
 from keras.layers import Conv2D
 from keras.layers import Dense
 from keras.metrics import Mean, SparseCategoricalAccuracy
+from keras.losses import SparseCategoricalCrossentropy
+from keras.optimizers import Adam, SGD
+from keras.callbacks import TensorBoard
 
 class Client:
 
@@ -118,7 +121,7 @@ class Client:
             raise ConfigurationError("Invalid attack configuration", e)
 
         args = attack_config.objective['args'].copy()
-        args['loss_object'] = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
+        args['loss_object'] = SparseCategoricalCrossentropy(from_logits=False)
         args['optimizer'] = self.build_optimizer(args)
         args.pop('learning_rate', None)
         args.pop('reduce_lr', None)
@@ -134,7 +137,7 @@ class Client:
 
         if self.attack_type != Attack.UNTARGETED:
             # for untargeted attacks we dont have an eval set to measure success on
-            _, adv_success = self.eval_aux_test(tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False))
+            _, adv_success = self.eval_aux_test(SparseCategoricalCrossentropy(from_logits=False))
             print(f"Adv success: {adv_success}")
             if 'reduce_lr' in optimizer_config and optimizer_config['reduce_lr']:
                 if adv_success > 0.6:
@@ -148,17 +151,17 @@ class Client:
                     decay = StepDecay(lr,
                                       optimizer_config['num_epochs'] * optimizer_config['num_batch'])
                     optimizer_config['step_decay'] = decay
-                    return tf.keras.optimizers.Adam(learning_rate=decay)
-                return tf.keras.optimizers.Adam(learning_rate=lr)
+                    return Adam(learning_rate=decay)
+                return Adam(learning_rate=lr)
         if opt == "SGD":
             if lr is not None:
                 if step_decay is not None and step_decay:
                     decay = StepDecay(lr,
                                       optimizer_config['num_epochs'] * optimizer_config['num_batch'])
                     optimizer_config['step_decay'] = decay
-                    return tf.keras.optimizers.SGD(learning_rate=decay)
-                return tf.keras.optimizers.SGD(learning_rate=lr)
-        return tf.keras.optimizers.Adam()
+                    return SGD(learning_rate=decay)
+                return SGD(learning_rate=lr)
+        return Adam()
 
 
     def evasion_factory(self):
@@ -206,7 +209,7 @@ class Client:
 
     def honest_training(self):
         """Performs local training"""
-        self.loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
+        self.loss_object = SparseCategoricalCrossentropy(
             from_logits=False)  # Our model has a softmax layer!
 
         num_iters = 0
@@ -225,7 +228,7 @@ class Client:
                     current_lr = lr(opt.iterations)
                 else:
                     current_lr = tf.convert_to_tensor(lr)
-                    
+
                 # print(f"Current lr: {current_lr}")
                 if self.config.debug_client_training:
                     print(f"Epoch {i}: Train loss={self.train_loss.result()}, acc={self.train_accuracy.result()}, lr={current_lr}", flush=True)
@@ -511,7 +514,7 @@ class Client:
         if self.config.benign_training.regularization_rate is not None:
             loss_object = regularized_loss(self.model.layers, self.weights, self.config.benign_training.regularization_rate)
         else:
-            loss_object = tf.keras.losses.SparseCategoricalCrossentropy(
+            loss_object = SparseCategoricalCrossentropy(
                 from_logits=False)  # Our model has a softmax layer!
 
         attack_type = self.attack_type

@@ -51,8 +51,8 @@ class Test(TestCase):
 
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(24)
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.001)
 
         # model = Model.create_model("dev")
         # x = tf.Variable(3.0)
@@ -78,8 +78,8 @@ class Test(TestCase):
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(12800)
         batch_size = 128
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+        loss_object = SparseCategoricalCrossentropy(from_logits=False)
+        optimizer = SGD(learning_rate=0.1)
         for i in range(10):
             for bid in range(int(x_train.shape[0] / batch_size)):
                 batch_x = x_train[bid * batch_size:(bid + 1) * batch_size]
@@ -104,8 +104,8 @@ class Test(TestCase):
 
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(24)
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.001)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.001)
 
 
         for i in range(10):
@@ -124,8 +124,8 @@ class Test(TestCase):
 
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(24)
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.00001)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.00001)
 
         for i in range(10):
             with tf.GradientTape() as tape:
@@ -151,8 +151,8 @@ class Test(TestCase):
 
             (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(24)
 
-            loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-            optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+            loss_object = SparseCategoricalCrossentropy(from_logits=True)
+            optimizer = SGD(learning_rate=0.1)
 
             # model = Model.create_model("dev")
             # x = tf.Variable(3.0)

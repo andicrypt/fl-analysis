@@ -9,7 +9,10 @@ import numpy as np
 from keras.layers import Input, Activation, Conv2D, Dense, Dropout, BatchNormalization, ReLU, \
     DepthwiseConv2D, GlobalAveragePooling2D, GlobalMaxPooling2D, Add
 from keras.models import Model
-from keras import regularizers
+from keras import regularizers, Input
+from keras.optimizers import Adam
+from keras.layers import Lambda
+from keras.applications.mobilenet_v2 import MobileNetV2
 
 
 # define the filter size
@@ -62,7 +65,7 @@ def create_model(rows, cols, channels):
     # encoder - input
     alpha = 0.5
     include_top = True
-    model_input = tf.keras.Input(shape=(rows, cols, channels), name='input_image')
+    model_input = Input(shape=(rows, cols, channels), name='input_image')
     x = model_input
 
     first_block_filters = _make_divisible(32 * alpha, 8)
@@ -123,8 +126,8 @@ def create_model(rows, cols, channels):
     # create model of MobileNetV2 (for CIFAR-10)
     model = Model(inputs=model_input, outputs=x, name='mobilenetv2_cifar10')
 
-    # model.compile(optimizer=tf.keras.optimizers.Adam(lr_initial), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
-    # model.compile(optimizer=tf.keras.optimizers.Adam(lr_initial), loss='sparse_categorical_crossentropy',
+    # model.compile(optimizer=Adam(lr_initial), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+    # model.compile(optimizer=Adam(lr_initial), loss='sparse_categorical_crossentropy',
     #               metrics=['accuracy'])
     return model
 
@@ -134,8 +137,8 @@ def mobilenetv2_cifar10():
     # # model.summary()
     #
     # return model
-    # inputs = tf.keras.Input(shape=(32, 32, 3))
-    # resize_layer = tf.keras.layers.Lambda(
+    # inputs = Input(shape=(32, 32, 3))
+    # resize_layer = Lambda(
     #     lambda image: tf.image.resize(
     #         image,
     #         (224, 224),
@@ -143,7 +146,7 @@ def mobilenetv2_cifar10():
     #         preserve_aspect_ratio=True
     #     )
     # , input_shape=(32, 32, 3))(inputs)
-    return tf.keras.applications.mobilenet_v2.MobileNetV2(
+    return MobileNetV2(
         input_shape=(32, 32, 3), alpha=0.5,
         include_top=True, weights=None, input_tensor=None, pooling=None,
         classes=10

@@ -1,6 +1,6 @@
 from __future__ import print_function
 import tensorflow as tf
-from keras.layers import Dense, Conv2D, BatchNormalization, Activation, AveragePooling2D, Input, Flatten
+from keras.layers import Dense, Conv2D, BatchNormalization, Activation, AveragePooling2D, Input, Flatten, Add
 from keras.optimizers import Adam
 from keras.callbacks import ModelCheckpoint, LearningRateScheduler, ReduceLROnPlateau
 from keras.regularizers import l2
@@ -204,7 +204,7 @@ def resnet_v1(input_shape, depth, num_classes=10):
                                  activation=None,
                                  batch_normalization=False,
                                  name=f"Conv2D_stack{stack}_res{res_block}_l2")
-            x = tf.keras.layers.add([x, y])
+            x = Add()([x, y])
             x = Activation('relu')(x)
         num_filters *= 2
 
@@ -298,7 +298,7 @@ def resnet_v2(input_shape, depth, num_classes=10):
                                  strides=strides,
                                  activation=None,
                                  batch_normalization=False)
-            x = tf.keras.layers.add([x, y])
+            x = Add()([x, y])
 
         num_filters_in = num_filters_out
 

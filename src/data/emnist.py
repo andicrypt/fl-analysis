@@ -2,6 +2,7 @@ import os
 
 import h5py
 import tensorflow as tf
+from keras.utils import get_file
 import numpy as np
 
 def load_data(only_digits=True, cache_dir=None):
@@ -62,7 +63,7 @@ def load_data(only_digits=True, cache_dir=None):
     sha256 = 'fe1ed5a502cea3a952eb105920bff8cffb32836b5173cb18a57a32c3606f3ea0'
 
   filename = fileprefix + '.tar.bz2'
-  path = tf.keras.utils.get_file(
+  path = get_file(
       filename,
       origin='https://storage.googleapis.com/tff-datasets-public/' + filename,
       file_hash=sha256,
