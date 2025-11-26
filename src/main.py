@@ -6,6 +6,7 @@ from src.config_cli import get_config
 from src.federated_averaging import FederatedAveraging
 from src.tf_model import Model
 from src.config.definitions import Config
+from keras.models import load_model
 
 import logging
 
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 def load_model():
     if config.environment.load_model is not None:
-        model = tf.keras.models.load_model(config.environment.load_model) # Load with weights
+        model = load_model(config.environment.load_model) # Load with weights
     else:
         model = Model.create_model(
             config.client.model_name, config.server.intrinsic_dimension,

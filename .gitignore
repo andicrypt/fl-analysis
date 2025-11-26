@@ -113,3 +113,6 @@ experiments_old/
 
 .ethusername
 lsf.o*
+
+train_configs/basic/events
+.vscode

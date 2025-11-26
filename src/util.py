@@ -5,8 +5,8 @@ import numpy as np
 import pandas as pd
 
 from os.path import join
-from tensorflow.python.keras.layers.convolutional import Conv2D
-from tensorflow.python.keras.layers.core import Dense
+from keras.layers import Conv2D
+from keras.layers import Dense
 
 
 def log_data(experiment_dir, rounds, accuracy, adv_success):

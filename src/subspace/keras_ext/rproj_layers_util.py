@@ -22,9 +22,9 @@
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Layer
+from keras.layers import Layer
 # from keras.backend.tensorflow_backend import _convert_string_dtype
-from tensorflow.keras import regularizers, constraints, initializers, activations
+from keras import regularizers, constraints, initializers, activations
 from sklearn.random_projection import SparseRandomProjection as SRP
 from scipy.sparse import find
 import time

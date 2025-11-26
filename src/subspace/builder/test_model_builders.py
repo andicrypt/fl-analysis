@@ -7,6 +7,8 @@ from tf_data import Dataset
 from tf_model import Model
 from .model_builders import build_model_mnist_fc, build_cnn_model_mnist_bhagoji, build_test, build_cnn_model_mnist_dev_conv
 from ..keras_ext.rproj_layers_util import ThetaPrime
+from keras.losses import SparseCategoricalCrossentropy
+from keras.optimizers import SGD
 import resource
 
 
@@ -176,8 +178,8 @@ class Test(TestCase):
 
         (x_train, y_train), (x_test, y_test) = Dataset.get_mnist_dataset(1)
 
-        loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
-        optimizer = tf.keras.optimizers.SGD(learning_rate=0.1)
+        loss_object = SparseCategoricalCrossentropy(from_logits=True)
+        optimizer = SGD(learning_rate=0.1)
 
         @tf.function
         def run():

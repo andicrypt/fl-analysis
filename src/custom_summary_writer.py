@@ -2,10 +2,10 @@ import numpy as np
 from tensorboardX import SummaryWriter
 from os.path import join
 from numpy.linalg import norm
-from tensorflow.python.keras.layers.convolutional import Conv2D, ZeroPadding2D, DepthwiseConv2D
-from tensorflow.python.keras.layers.core import Dense
-from tensorflow.python.keras.layers.embeddings import Embedding
-from tensorflow.python.keras.layers.recurrent_v2 import LSTM
+from keras.layers import Conv2D, ZeroPadding2D, DepthwiseConv2D
+from keras.layers import Dense
+from keras.layers import Embedding
+from keras.layers import LSTM
 from scipy.linalg import eigh
 
 from src.federated_averaging import FederatedAveraging

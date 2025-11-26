@@ -5,7 +5,7 @@ from copy import deepcopy
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from keras.callbacks import LearningRateScheduler
 
 import src.prob_clip as prob_clip
 from src.data.tf_data import Dataset
@@ -16,9 +16,9 @@ from src.data import image_augmentation
 from src.learning_rate_decay import StepDecay
 from src.loss import regularized_loss
 from src.tf_model import Model
-from tensorflow.python.keras.layers.convolutional import Conv2D
-from tensorflow.python.keras.layers.core import Dense
-
+from keras.layers import Conv2D
+from keras.layers import Dense
+from keras.metrics import Mean, SparseCategoricalAccuracy
 
 class Client:
 
@@ -49,8 +49,8 @@ class Client:
 
         self._dropout_mask = None
 
-        self.train_loss = tf.keras.metrics.Mean(name='train_loss')
-        self.train_accuracy = tf.keras.metrics.SparseCategoricalAccuracy(name='train_accuracy')
+        self.train_loss = Mean(name='train_loss')
+        self.train_accuracy = SparseCategoricalAccuracy(name='train_accuracy')
 
         self.loss_object = None
         self.honest_optimizer = self.create_honest_optimizer()
@@ -219,13 +219,18 @@ class Client:
                 for batch_id, (batch_x, batch_y) in enumerate(self.dataset.get_data()):
                     self.optimized_training(batch_x, batch_y)
 
-                current_lr = self.honest_optimizer._decayed_lr(var_dtype=tf.float32)
+                opt = self.honest_optimizer
+                lr = opt.learning_rate
+                if hasattr(lr, "__call__"):
+                    current_lr = lr(opt.iterations)
+                else:
+                    current_lr = tf.convert_to_tensor(lr)
+                    
                 # print(f"Current lr: {current_lr}")
                 if self.config.debug_client_training:
-
                     print(f"Epoch {i}: Train loss={self.train_loss.result()}, acc={self.train_accuracy.result()}, lr={current_lr}", flush=True)
-                    self.train_loss.reset_states()
-                    self.train_accuracy.reset_states()
+                    self.train_loss.reset_state()
+                    self.train_accuracy.reset_state()
         else:
             self.honest_optimizer = self.create_honest_optimizer()
 
@@ -532,8 +537,8 @@ class Client:
     def train(self, round):
         """Performs local training"""
 
-        self.train_loss.reset_states()
-        self.train_accuracy.reset_states()
+        self.train_loss.reset_state()
+        self.train_accuracy.reset_state()
         self.pgd_step_counter = 0
 
         self.model.set_weights(self.weights)

@@ -20,12 +20,12 @@
 
 import numpy as np
 import tensorflow as tf
-from tensorflow.keras.layers import Layer, InputSpec
-import tensorflow.keras.backend as K
+from keras.layers import Layer, InputSpec
+import keras.backend as K
 from tensorflow.python.keras.utils import conv_utils
 from src.subspace.keras_ext.rproj_layers_util import _convert_string_dtype
 # from keras.backend.tensorflow_backend import _convert_string_dtype
-from tensorflow.keras import regularizers, constraints, initializers, activations
+from keras import regularizers, constraints, initializers, activations
 
 ###########
 #

@@ -19,9 +19,9 @@
 # SOFTWARE.
 
 import tensorflow as tf
-from tensorflow.keras import Model
-from tensorflow.keras import Input
-from tensorflow.python.keras import backend
+from keras import Model
+from keras import Input
+from keras import backend
 
 from src.subspace.general.util import DotDict
 from .util import full_static_shape

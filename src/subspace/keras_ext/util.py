@@ -21,8 +21,8 @@
 import os
 import numpy as np
 import tensorflow as tf
-import tensorflow.keras.backend as K
-from tensorflow.keras.layers import Flatten, Input, Lambda
+import keras.backend as K
+from keras.layers import Flatten, Input, Lambda
 
 from src.subspace.general.tfutil import tf_assert_gpu, hist_summaries_traintest
 

@@ -18,8 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-from tensorflow.keras.layers import Input
-from keras.engine.topology import Network as Container
+from keras.layers import Input
+from keras import Model as Container
 
 from .util import full_static_shape
 

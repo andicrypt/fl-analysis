@@ -20,7 +20,7 @@
 
 import os
 import numpy as np
-from orderedset import OrderedSet
+from ordered_set import OrderedSet
 
 import tensorflow as tf
 

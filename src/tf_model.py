@@ -11,10 +11,13 @@ from src.subspace.builder.model_builders import build_model_mnist_fc, \
     build_cnn_model_mnist_bhagoji, build_cnn_model_mnist_dev_conv, build_cnn_model_mnistcnn_conv, build_LeNet_cifar, \
     build_cnn_model_cifar_allcnn, build_model_cifar_LeNet_fastfood
 from src.subspace.builder.resnet import build_LeNet_resnet, build_resnet_fastfood
-from tensorflow.keras.regularizers import l2
+from keras.regularizers import l2
 
 from src.model.mobilenet import mobilenetv2_cifar10
-
+from keras.optimizers import Adam, SGD
+from keras.optimizers.schedules import PiecewiseConstantDecay, ExponentialDecay
+from keras import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Flatten, Dense
 
 class Model:
     @staticmethod
@@ -26,39 +29,38 @@ class Model:
         """
         if model_name == 'mnist_cnn':
             do_fact = 0.3
-            model = tf.keras.Sequential([
-                tf.keras.layers.Conv2D(filters=64, kernel_size=2, padding='same', activation='relu',
-                                       input_shape=(28, 28, 1), dtype=float),
-                tf.keras.layers.MaxPooling2D(pool_size=2),
+            model = Sequential([
+                Conv2D(filters=64, kernel_size=2, padding='same', activation='relu',input_shape=(28, 28, 1), dtype=float),
+                MaxPooling2D(pool_size=2),
                 # tf.keras.layers.Dropout(0.3),
-                tf.keras.layers.Conv2D(filters=32, kernel_size=2, padding='same', activation='relu'),
-                tf.keras.layers.MaxPooling2D(pool_size=2),
+                Conv2D(filters=32, kernel_size=2, padding='same', activation='relu'),
+                MaxPooling2D(pool_size=2),
                 # tf.keras.layers.Dropout(0.3),
-                tf.keras.layers.Flatten(),
-                tf.keras.layers.Dense(256, activation='relu'),
+                Flatten(),
+                Dense(256, activation='relu'),
                 # tf.keras.layers.Dropout(0.5),
-                tf.keras.layers.Dense(10, activation='softmax')
+                Dense(10, activation='softmax')
             ])
         elif model_name == 'dev':
             regularizer = l2(regularization_rate) if regularization_rate is not None else None
 
             model = tf.keras.Sequential([
-                tf.keras.layers.Conv2D(8, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1), kernel_regularizer=regularizer, bias_regularizer=regularizer),
-                tf.keras.layers.Conv2D(4, (3, 3), activation='relu', kernel_regularizer=regularizer, bias_regularizer=regularizer),
-                tf.keras.layers.MaxPooling2D(pool_size=(2, 2)),
-                tf.keras.layers.Flatten(),
-                tf.keras.layers.Dense(32, activation='relu', kernel_regularizer=regularizer, bias_regularizer=regularizer),
-                tf.keras.layers.Dense(10, activation='softmax'),
+                Conv2D(8, kernel_size=(3, 3), activation='relu', input_shape=(28, 28, 1), kernel_regularizer=regularizer, bias_regularizer=regularizer),
+                Conv2D(4, (3, 3), activation='relu', kernel_regularizer=regularizer, bias_regularizer=regularizer),
+                MaxPooling2D(pool_size=(2, 2)),
+                Flatten(),
+                Dense(32, activation='relu', kernel_regularizer=regularizer, bias_regularizer=regularizer),
+                Dense(10, activation='softmax'),
             ])
         elif model_name == 'bhagoji':
             model = tf.keras.Sequential([
-                tf.keras.layers.Conv2D(64, kernel_size=(5, 5), padding='valid', activation='relu', input_shape=(28, 28, 1)),
-                tf.keras.layers.Conv2D(64, (5, 5), activation='relu'),
+                Conv2D(64, kernel_size=(5, 5), padding='valid', activation='relu', input_shape=(28, 28, 1)),
+                Conv2D(64, (5, 5), activation='relu'),
                 # tf.keras.layers.Dropout(0.25),
-                tf.keras.layers.Flatten(),
-                tf.keras.layers.Dense(128, activation='relu'),
+                Flatten(),
+                Dense(128, activation='relu'),
                 # tf.keras.layers.Dropout(0.5),
-                tf.keras.layers.Dense(10, activation='softmax')
+                Dense(10, activation='softmax')
             ])
         elif model_name == 'lenet5_cifar':
             model = build_lenet5(input_shape=(32, 32, 3), l2_reg=regularization_rate)
@@ -191,9 +193,9 @@ class Model:
         else:
             lr_schedule = learning_rate
         if optimizer_name == 'Adam':
-            return tf.keras.optimizers.Adam(lr_schedule)
+            return Adam(lr_schedule)
         elif optimizer_name == 'SGD':
-            return tf.keras.optimizers.SGD(lr_schedule, 0.9)
+            return SGD(lr_schedule, 0.9)
 
         raise Exception('Optimizer `%s` not supported.' % optimizer_name)
 
@@ -216,7 +218,7 @@ class Model:
 
         if decay_type == 'exponential':
             # exp
-            lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+            lr_schedule = ExponentialDecay(
                 learning_rate,
                 decay_steps=decay_steps * steps_multiplier,
                 decay_rate=decay_rate,
@@ -225,7 +227,7 @@ class Model:
         elif decay_type == 'boundaries':
             values = [learning_rate * v for v in decay_values]
             boundaries = [boundary * steps_multiplier for boundary in decay_boundaries]
-            lr_schedule = tf.keras.optimizers.schedules.PiecewiseConstantDecay(
+            lr_schedule = PiecewiseConstantDecay(
                 boundaries, values)
             return lr_schedule
         else:

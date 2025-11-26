@@ -69,14 +69,14 @@ class WithTimer(object):
         self.quiet = quiet
         
     def elapsed(self):
-        return time.time() - self.wall, time.clock() - self.proc
+        return time.time() - self.wall, time.perf_counter() - self.proc
 
     def enter(self):
         '''Manually trigger enter'''
         self.__enter__()
     
     def __enter__(self):
-        self.proc = time.clock()
+        self.proc = time.perf_counter()
         self.wall = time.time()
         return self
         
@@ -91,7 +91,7 @@ class TicToc(object):
         self.reset()
         
     def reset(self):
-        self._proc = time.clock()
+        self._proc = time.perf_counter()
         self._wall = time.time()
         
     def elapsed(self):
@@ -101,7 +101,7 @@ class TicToc(object):
         return time.time() - self._wall
 
     def proc(self):
-        return time.clock() - self._proc
+        return time.perf_counter() - self._proc
 
 
 globalTicToc = TicToc()

@@ -6,10 +6,11 @@ import numpy as np
 
 from src.federated_averaging import FederatedAveraging
 from src.tf_model import Model
+from keras.models import load_model
 
 def load_model(args, config):
     if args.load_model is not None:
-        model = tf.keras.models.load_model(args.load_model) # Load with weights
+        model = load_model(args.load_model) # Load with weights
     else:
         model = Model.create_model(args.model_name, config['intrinsic_dimension'], config['regularization_rate'])
     return model

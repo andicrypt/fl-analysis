@@ -370,8 +370,8 @@ def _preprocess_contamination_rate(args):
     assert args.contamination_rate[0] is not None, "Contamination rate must be specified."
 
     from src.tf_model import Model
-    from tensorflow.python.keras.layers.convolutional import Conv2D
-    from tensorflow.python.keras.layers.core import Dense
+    from keras.layers import Conv2D
+    from keras.layers import Dense
 
     model = Model.create_model(args.model_name)
     n_layers = len([1 for layer in model.layers if type(layer) in [Conv2D, Dense]])

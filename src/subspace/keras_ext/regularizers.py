@@ -20,8 +20,8 @@
 
 '''Custom Keras regularizers.'''
 
-import tensorflow.keras
-import tensorflow.keras.backend as K
+import keras
+import keras.backend as K
 
 
 

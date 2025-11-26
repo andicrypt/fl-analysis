@@ -11,11 +11,9 @@ from typing import List, Any
 
 import numpy as np
 import tensorflow as tf
+from keras.metrics import Mean
 
 # from src.torch_compat.data_holder import DataHolder
-
-tf.get_logger().setLevel('DEBUG')
-
 
 import src.config as config
 from src.attack_dataset_config import AttackDatasetConfig
@@ -28,10 +26,11 @@ from src.data.tf_data import Dataset, ImageGeneratorDataset, GeneratorDataset, P
 from src.tf_model import Model
 from src.data.tf_data_global import IIDGlobalDataset, NonIIDGlobalDataset, DirichletDistributionDivider
 
+from src.data.tf_data_global import IIDGlobalDataset, NonIIDGlobalDataset, DirichletDistributionDivider
+
+tf.get_logger().setLevel('DEBUG')
 
 class FederatedAveraging:
-    """Implementation of federated averaging algorithm."""
-    client_objs: List[Client]
     federated_dropout: config.definitions.FederatedDropout
 
     def __init__(self, config, models, config_path):
@@ -100,8 +99,8 @@ class FederatedAveraging:
         self.parameters_history = [] if self.keep_history else None
         self.previous_round_weights = None # Holder
 
-        self.test_accuracy = tf.keras.metrics.Mean(name='test_accuracy')
-        self.test_loss = tf.keras.metrics.Mean(name='test_loss')
+        self.test_accuracy = Mean(name='test_accuracy')
+        self.test_loss = Mean(name='test_loss')
 
         self.aggregator = aggregators.build_aggregator(config)
 
@@ -550,8 +549,8 @@ class FederatedAveraging:
         # predictions = []
 
         # loss_object = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=False)
-        self.test_accuracy.reset_states()
-        self.test_loss.reset_states()
+        self.test_accuracy.reset_state()
+        self.test_loss.reset_state()
 
         for batch_x, batch_y in self.global_dataset.get_test_batch(
                 self.config.client.benign_training.batch_size, self.config.server.num_test_batches):

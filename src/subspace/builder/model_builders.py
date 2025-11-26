@@ -2,13 +2,12 @@
 import numpy as np
 
 import tensorflow as tf
-from tensorflow.keras import Model
-from tensorflow.keras.layers import (Dense, Flatten, Input, Activation,
+from keras.models import Model
+from keras.layers import (Dense, Flatten, Input, Activation,
                           Reshape, Dropout, Convolution2D,
                           MaxPooling2D, BatchNormalization,
                           Conv2D, GlobalAveragePooling2D,
-                          Concatenate, AveragePooling2D,
-                          LocallyConnected2D)
+                          Concatenate, AveragePooling2D)
 
 # from general.tfutil import hist_summaries_traintest, scalar_summaries_traintest
 
@@ -23,7 +22,7 @@ from src.subspace.keras_ext.rproj_layers_util import (OffsetCreatorDenseProj,
                                                   FastWalshHadamardProjector,
                                                   ThetaPrime, MultiplyLayer)
 from src.subspace.keras_ext.util import make_image_input_preproc
-from tensorflow.keras.regularizers import l2
+from keras.regularizers import l2
 
 
 def make_and_add_losses(model, input_labels):
