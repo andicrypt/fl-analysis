@@ -11,7 +11,7 @@ from src.subspace.builder.model_builders import build_model_mnist_fc, \
     build_cnn_model_mnist_bhagoji, build_cnn_model_mnist_dev_conv, build_cnn_model_mnistcnn_conv, build_LeNet_cifar, \
     build_cnn_model_cifar_allcnn, build_model_cifar_LeNet_fastfood
 from src.subspace.builder.resnet import build_LeNet_resnet, build_resnet_fastfood
-from keras.regularizers import l2
+from tensorflow.keras.regularizers import l2
 
 from src.model.mobilenet import mobilenetv2_cifar10
 

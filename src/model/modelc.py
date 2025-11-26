@@ -1,6 +1,7 @@
-import keras
-from keras.regularizers import l2
-from keras import layers
+
+import tensorflow.keras as keras
+from tensorflow.keras.regularizers import l2
+from tensorflow.keras import layers
 
 
 def build_modelc(l2_reg):

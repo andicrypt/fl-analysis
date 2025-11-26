@@ -6,9 +6,9 @@ import tensorflow as tf
 import os
 import warnings
 import numpy as np
-from keras.layers import Input, Activation, Conv2D, Dense, Dropout, BatchNormalization, ReLU, \
+from tensorflow.keras.layers import Input, Activation, Conv2D, Dense, Dropout, BatchNormalization, ReLU, \
     DepthwiseConv2D, GlobalAveragePooling2D, GlobalMaxPooling2D, Add
-from keras.models import Model
+from tensorflow.keras.models import Model
 from keras import regularizers
 
 

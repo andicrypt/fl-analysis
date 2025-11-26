@@ -35,8 +35,8 @@ import tensorflow as tf
 #     model.summary()
 #     return model
 
-from keras.layers import Embedding, Dense, LSTM
-from keras import Sequential
+from tensorflow.keras.layers import Embedding, Dense, LSTM
+from tensorflow.keras import Sequential
 
 
 def build_stacked_lstm():

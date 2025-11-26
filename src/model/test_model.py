@@ -1,7 +1,7 @@
 
-import keras
-from keras import layers
-from keras.regularizers import l2
+import tensorflow.keras as keras
+from tensorflow.keras import layers
+from tensorflow.keras.regularizers import l2
 
 
 def build_test_model(input_shape=(32, 32, 3), l2_reg=None):
