@@ -1,0 +1,46 @@
+wget https://www.python.org/ftp/python/3.7.17/Python-3.7.17.tar.xz
+tar -xf Python-3.7.17.tar.xz
+cd Python-3.7.17
+
+
+sudo apt update
+sudo apt install build-essential \
+    libssl-dev zlib1g-dev libncurses5-dev libncursesw5-dev \
+    libreadline-dev libsqlite3-dev libgdbm-dev libdb5.3-dev \
+    libbz2-dev libexpat1-dev liblzma-dev tk-dev uuid-dev
+
+sudo apt update
+sudo apt install -y \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev libncursesw5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libgdbm-dev libdb-dev libdb5.3-dev \
+    libbz2-dev \
+    libexpat1-dev \
+    liblzma-dev \
+    tk-dev \
+    uuid-dev \
+    libffi-dev
+
+
+./configure --enable-optimizations --prefix=/usr/local/python3.7.17
+
+make -j$(nproc)
+
+sudo make altinstall
+
+echo 'export PATH="/usr/local/python3.7.17/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+
+python3.7 -m venv venv
+source venv/bin/activate
+pip install pipenv
+pip install --upgrade pip setuptools
+
+pipenv install --ignore-pipfile
+
+
