@@ -52,7 +52,7 @@ environment:
     attack_frequency: 1.0
     attacker_full_knowledge: true
     experiment_name: cifar_bounds
-    load_model: ../models/resnet18.h5
+    load_model: models/resnet18.h5
     num_clients: 100
     num_malicious_clients: 1
     num_selected_clients: 40

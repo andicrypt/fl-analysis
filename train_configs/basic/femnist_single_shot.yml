@@ -52,7 +52,7 @@ environment:
     attacker_full_knowledge: true
     attacker_full_dataset: true
     experiment_name: backdoor_tasks_bound_lenet
-    load_model: ../models/lenet5_emnist_088.h5
+    load_model: models/lenet5_emnist_088.h5
     num_clients: 3383
     num_malicious_clients: 113
     num_selected_clients: 30
