@@ -44,3 +44,10 @@ pip install --upgrade pip setuptools
 pipenv install --ignore-pipfile
 
 
+
+
+GPU profiling:
+watch -n 1 nvidia-smi
+nvidia-smi dmon -s pucvmt
+
+

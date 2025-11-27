@@ -1,110 +1,127 @@
 import tensorflow as tf
 import numpy as np
-
-from keras.layers import RandomFlip, RandomTranslation
-
-
-# =======================================
-# Modern, GPU-accelerated augmenters
-# =======================================
-
-AUG_SHIFT = RandomTranslation(
-    height_factor=0.1,
-    width_factor=0.1,
-    fill_mode="nearest"
-)
-
-AUG_FLIP = RandomFlip("horizontal")
-
-
-# =======================================
-# Normalization
-# =======================================
-
-CIFAR_MEAN = tf.constant([0.4914, 0.4822, 0.4465], dtype=tf.float32)
-CIFAR_STD  = tf.constant([0.2023, 0.1994, 0.2010], dtype=tf.float32)
-
-def normalize(image):
-    # image: [H, W, 3], values in [0,1] or [0,255]
-    image = tf.cast(image, tf.float32) / 255.0
-    image = (image - CIFAR_MEAN) / CIFAR_STD
-    return image
-
-
-# =======================================
-# Main augment functions
-# =======================================
-
-def augment(image, label):
-    image = AUG_FLIP(image)
-    image = AUG_SHIFT(image)
+from keras.layers import RandomTranslation
+def augment(image,label):
+    image = tf.image.random_flip_left_right(image)
+    image = tf.numpy_function(shift, [image], tf.float32)
     image = normalize(image)
+    # debug(image, label)
+
     return image, label
 
-
-def test_augment(image, label):
+def test_augment(image,label):
     return normalize(image), label
 
-
 def train_aux_augment(image, label):
-    image = AUG_FLIP(image)
-    image = AUG_SHIFT(image)
+    image = tf.image.random_flip_left_right(image)
+    image = tf.numpy_function(shift, [image], tf.float32)
+    # image = tf.add(image, tf.random.normal(tf.shape(image), 0, 0.05))
     return image, label
 
-
 def test_aux_augment(image, label):
-    return augment(image, label)     # identical to training augment
+    """Augmentation if aux test set is small"""
+    return augment(image, label) # same as training
 
+def normalize(image):
+    mean = [0.4914, 0.4822, 0.4465]
+    std = [0.2023, 0.1994, 0.2010]
 
-# =======================================
-# Pixel noise
-# =======================================
+    # tf.print("Before:", tf.shape(image), tf.math.reduce_std(image))
+
+    # image = tf.image.per_image_standardization(image)
+    # image = image - tf.reshape(mean, [1, 1, 1, 3])
+    # image = image / tf.reshape(std, [1, 1, 1, 3])
+
+    # tf.print("After:", tf.shape(image), tf.math.reduce_std(image))
+
+    return image
+
+def shift(images):
+    shifted = [shift_single(img) for img in images]
+    return np.array(shifted, dtype=np.float32)
+
+def shift_single_tf(image, tx, ty):
+    """
+    image: numpy or tf tensor (H, W, C)
+    tx, ty: translation in pixels
+    """
+
+    # Convert pixel translation → fraction of image size
+    h, w = image.shape[0], image.shape[1]
+    tx_frac = tx / h
+    ty_frac = ty / w
+
+    # Create deterministic translation layer
+    translate = RandomTranslation(
+        height_factor=(tx_frac, tx_frac),
+        width_factor=(ty_frac, ty_frac),
+        fill_mode='nearest'
+    )
+
+    # Apply and return numpy array
+    out = translate(tf.expand_dims(image, 0))  # add batch dim
+    return out[0].numpy()
+
+def shift_single(image):
+    h, w = image.shape[0], image.shape[1]
+
+    # Random shift amount
+    tx = np.random.uniform(-0.1, 0.1) * h
+    ty = np.random.uniform(-0.1, 0.1) * w
+
+    return shift_single_tf(image, tx, ty)
+
 
 def add_noise_batch(sigma):
     def cb(images, labels):
-        noise = tf.random.normal(tf.shape(images), mean=0.0, stddev=sigma)
-        return images + noise, labels
+        images = images + tf.random.normal(tf.shape(images), mean=0, stddev=sigma)
+        return images, labels
+
     return cb
 
 
-# =======================================
-# Pixel Trigger Pattern (Backdoor)
-# =======================================
+def add_pixel_pattern(pixel_pattern):
+    triggersize = 4
+    def np_callback(images):
+        trigger = np.ones((images.shape[0], triggersize, triggersize, images.shape[-1]))
+        images[:, 0:triggersize, 0:triggersize, :] = trigger
+        return images
 
-def add_pixel_pattern(size=4):
-    """Add a white trigger square at top-left corner."""
     def cb(images, labels):
-        B, H, W, C = images.shape
-        trigger = tf.ones((B, size, size, C), dtype=images.dtype)
+        # shape = tf.shape(images)
+        # tf.print(shape)
+        # print(shape)
+        # trigger = tf.ones((shape[0], triggersize, triggersize, shape[-1]))
+        # trigger = tf.ones((None, triggersize, triggersize, 3))
+        # tf.ones_like
+        # d0 = shape[0]
+        # tf.print(d0)
+        # x = tf.constant(tf.float32, shape=[d0, triggersize, triggersize, 3])
+        # trigger = tf.ones_like(x)
+        # images[:, 0:triggersize, 0:triggersize, :] = trigger
+        # this callback is slower i think
+        images = tf.numpy_function(np_callback, [images], tf.float32)
 
-        # Insert trigger (vectorized)
-        images = tf.tensor_scatter_nd_update(
-            images,
-            indices=tf.reshape(
-                tf.range(B, dtype=tf.int32), (-1,1)
-            ),
-            updates=tf.concat([trigger, images[:, size:, :, :]], axis=1)
-        )
         return images, labels
 
     return cb
 
 
 def pixel_pattern_if_needed(needed):
-    return add_pixel_pattern() if needed else lambda x, y: (x, y)
+    def no_op(images, labels):
+        return images, labels
 
+    if needed:
+        return add_pixel_pattern(None)
+    else:
+        return no_op
 
-# =======================================
-# Optional debug visualization
-# =======================================
 
 def debug(image, label):
     import matplotlib.pyplot as plt
-    img = image.numpy()
-    if img.max() <= 1.0:
-        img = img * 255.0
-    img = img.astype(np.uint8)
 
-    plt.imshow(img)
-    plt.title(f"Label: {label.numpy()}")
-    plt.show()
+    for i in range(image.shape[0]):
+        plt.figure()
+        plt.imshow(image[i] + 0.5)
+        plt.title(f"Label: {label[i]}")
+        plt.show()

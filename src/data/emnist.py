@@ -1,7 +1,6 @@
 import os
 
 import h5py
-import tensorflow as tf
 from keras.utils import get_file
 import numpy as np
 

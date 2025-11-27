@@ -108,4 +108,3 @@ def build_aggregator(config):
     #     return TrimmedMean(config['trimmed_mean_beta'], weight_coefficient)
     # else:
     #     raise NotImplementedError(f"Aggregator {aggregator} not supported!")
-

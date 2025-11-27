@@ -570,19 +570,21 @@ class FederatedAveraging:
             adv_success = 1 - test_accuracy
         elif self.attack_type == Attack.BACKDOOR:
             all_adv_success = []
-            batches = 0
             attack_config: AttackDatasetConfig = self.attack_dataset
             amount_images = max(attack_config.augment_times, self.global_dataset.x_aux_test.shape[0])
             batch_size = min(self.global_dataset.x_aux_test.shape[0], self.config.client.benign_training.batch_size)
             total_batches = int(amount_images / batch_size) # handle case ?
 
 
-
-            for batch_x, batch_y in self.global_dataset.get_aux_generator(self.config.client.benign_training.batch_size,
-                                                                          attack_config.augment_times,
-                                                                          attack_config.augment_data,
-                                                                          attack_config.type,
-                                                                          attack_config.max_test_batches):
+            aux_dataset = self.global_dataset.get_aux_generator(
+                self.config.client.benign_training.batch_size,
+                attack_config.augment_times,
+                attack_config.augment_data,
+                attack_config.type,
+                attack_config.max_test_batches
+            ).take(total_batches)
+            
+            for batch_x, batch_y in aux_dataset:
                 preds = self.model(batch_x, training=False).numpy().argmax(axis=1)
                 pred_inds = preds == batch_y
                 if self.config.environment.print_backdoor_eval:
@@ -591,9 +593,6 @@ class FederatedAveraging:
                 # This may break on large test sets
                 # adv_success = np.mean(pred_inds)
                 all_adv_success.append(pred_inds)
-                batches += 1
-                if batches > total_batches:
-                    break # manually
 
             adv_success = np.mean(np.concatenate(all_adv_success))
         else:

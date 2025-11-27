@@ -3,7 +3,6 @@ from src.backdoor.edge_case_attack import EdgeCaseAttack
 from src.client_attacks import Attack
 from src.data.tf_data import Dataset
 from src.data.tf_data_global import GlobalDataset, IIDGlobalDataset, NonIIDGlobalDataset, DirichletDistributionDivider
-from src.config.definitions import Config
 from src.data.leaf_loader import load_leaf_dataset, process_text_input_indices, process_char_output_indices
 import numpy as np
 
@@ -346,4 +345,3 @@ def get_dataset(config, attack_ds_config, add_x_train=None, add_y_train=None):
         raise Exception('Selected dataset with distribution not supported')
 
     return ds, (x_train, y_train)
-
