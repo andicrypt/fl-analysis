@@ -62,10 +62,10 @@ environment:
     save_weight_outside_bound: 0.01
     limit_tf_gpu_mem_mb: 8096
 job:
-    cpu_cores: 12
-    cpu_mem_per_core: 1024
-    gpu_memory_min: 12000
-    minutes: 1440
+    cpu_cores: 20
+    cpu_mem_per_core: 4096
+    gpu_memory_min: 10240
+    minutes: 10
     use_gpu: 1
 server:
     aggregator:
