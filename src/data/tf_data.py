@@ -198,10 +198,10 @@ class Dataset:
     def get_emnist_dataset(number_of_samples, number_of_clients, normalize_mnist_data):
         """nonIID MNIST dataset loader"""
         train_dataset, test_dataset = emnist.load_data()
-        x_train, y_train = np.array([1.0 - np.array(val['pixels']) for val in train_dataset]), \
-                           np.array([np.array(val['label']).astype(np.uint8) for val in train_dataset])
-        x_test, y_test = np.array([1.0 - np.array(val['pixels']) for val in test_dataset]), \
-                           np.array([np.array(val['label']).astype(np.uint8) for val in test_dataset])
+        x_train = [1.0 - np.array(val['pixels']) for val in train_dataset]
+        y_train = [np.array(val['label']).astype(np.uint8) for val in train_dataset]
+        x_test = [1.0 - np.array(val['pixels']) for val in test_dataset]
+        y_test = [np.array(val['label']).astype(np.uint8) for val in test_dataset]
 
         if normalize_mnist_data:
             emnist_mean, emnist_std = 0.036910772, 0.16115953
@@ -209,7 +209,7 @@ class Dataset:
             x_test = np.array([(x - emnist_mean) / emnist_std for x in x_test])
 
         # Randomly assign clients to buckets but keep them as client
-        if number_of_clients < x_train.shape[0]:
+        if number_of_clients < len(x_train):
             assignments = np.random.randint(0, number_of_clients, x_train.shape[0], dtype=np.uint16)
             new_x_train = []
             new_y_train = []
@@ -242,7 +242,7 @@ class Dataset:
             x_train, y_train = Dataset.keep_samples_iterative(new_x_train, new_y_train, number_of_samples_per_client)
             x_test, y_test = Dataset.keep_samples_iterative(new_x_test, new_y_test,
                                                             min(number_of_samples_per_client, 500))
-        elif number_of_clients > x_train.shape[0]:
+        elif number_of_clients > len(x_train):
             print(f"Number of clients {number_of_clients} is large than amount of EMNIST users {x_train.shape[0]}")
         else:
             print("Exactly using EMNIST as clients!")

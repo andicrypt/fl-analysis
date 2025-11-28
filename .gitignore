@@ -116,3 +116,5 @@ lsf.o*
 
 train_configs/basic/events
 .vscode
+emnist_test.py
+fed_emnist_digitsonly_test.h5

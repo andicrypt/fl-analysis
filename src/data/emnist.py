@@ -64,7 +64,7 @@ def load_data(only_digits=True, cache_dir=None):
   filename = fileprefix + '.tar.bz2'
   path = get_file(
       filename,
-      origin='https://storage.googleapis.com/tff-datasets-public/' + filename,
+      origin='https://storage.cloud.google.com/tf-analysis-andicrypt/' + filename,
       file_hash=sha256,
       hash_algorithm='sha256',
       extract=True,
@@ -78,10 +78,20 @@ def load_data(only_digits=True, cache_dir=None):
   return train_client_data, test_client_data
 
 def process_h5py(filename):
-    file = h5py.File(filename, 'r')
-    drawers = file['examples']
-    out = []
-    for i, key in enumerate(drawers.keys()):
-        out.append({ 'pixels': drawers[key]['pixels'].value, 'label': drawers[key]['label'].value})
+    with h5py.File(filename, 'r') as f:
+        drawers = f['examples']  # HDF5 group with one subgroup per writer/client
+        out = []
+        for key in drawers.keys():
+            grp = drawers[key]
 
-    return np.asarray(out)
+            # Read arrays from the HDF5 datasets
+            pixels = grp['pixels'][()]  # shape (N, 28, 28)
+            labels = grp['label'][()]   # shape (N,)
+
+            out.append({
+                'pixels': pixels,
+                'label': labels
+            })
+
+    # IMPORTANT: keep as list of dicts, do NOT wrap in np.asarray
+    return out
