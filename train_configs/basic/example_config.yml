@@ -33,8 +33,8 @@ dataset:
   dataset: mnist
   data_distribution: IID
 job:
-  minutes: 240 # Max. minutes to run. Leonhard has 240 and 1440 queues
-  cpu_cores: 20
-  cpu_mem_per_core: 4096
-  use_gpu: 1
-  gpu_memory_min: 10240
+    cpu_cores: 12
+    cpu_mem_per_core: 1024
+    gpu_memory_min: 12000
+    minutes: 1440
+    use_gpu: 1
